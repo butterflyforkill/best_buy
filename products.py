@@ -136,4 +136,7 @@ class Product:
 
         total_price = self.price * quantity
         self.quantity -= quantity
+        if self.quantity == 0:
+            self.deactivate()
+
         return total_price
