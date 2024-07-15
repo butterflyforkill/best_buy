@@ -1,3 +1,4 @@
+import sys
 from products import Product
 from store import Store
 
@@ -119,7 +120,7 @@ def quit():
     None
     """
     print("Exiting the program...")
-    exit() 
+    sys.exit()
 
 
 def start(store):
@@ -171,7 +172,7 @@ def main():
                     Product("Google Pixel 7", price=500, quantity=250)
                 ]
     best_buy = Store(product_list)
-    start(best_buy)  
+    start(best_buy)
 
 
 if __name__ == "__main__":
