@@ -105,7 +105,7 @@ def test_promotion_applies_to_product_types(product_types):
         else:
             assert total_price < (product.price * 2)  # Discounted price
 
-
+# mocks
 @pytest.fixture
 def product_types():
     return [Product, NonStockedProduct, LimitedProduct]
