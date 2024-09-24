@@ -1,5 +1,5 @@
 import sys
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
 from store import Store
 
 
@@ -105,9 +105,13 @@ def make_order(store):
         except ValueError:
             print("Error: Invalid input. Please enter a valid number.")
 
-    if shopping_list:
-        total_price = store.order(shopping_list)
-        print(f"Total price of the order: ${total_price}")
+    try:
+        if shopping_list:
+            total_price = Store.order(shopping_list)
+            print(f"Total price of the order: ${total_price}")
+    except ValueError as e:
+        print(f"Error: {e}")
+        
 
 
 def quit():
@@ -167,10 +171,12 @@ def main():
     Returns:
     None
     """
-    product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
+    product_list = [Product("MacBook Air M2", price=1450, quantity=100),
                     Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    Product("Google Pixel 7", price=500, quantity=250)
-                ]
+                    Product("Google Pixel 7", price=500, quantity=250),
+                    NonStockedProduct("Windows License", price=125),
+                    LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+               ]
     best_buy = Store(product_list)
     start(best_buy)
 

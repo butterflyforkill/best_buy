@@ -143,6 +143,17 @@ class Product:
 
 
 class NonStockedProduct(Product):
+    """
+    A subclass of Product representing a product that is not stocked.
+
+    Attributes:
+        name (str): The name of the product.
+        price (float): The price of the product.
+
+    Methods:
+        __init__: Initializes a NonStockedProduct with a name and price.
+        show: Displays the product information and indicates that it is a non-stocked product.
+    """
     def __init__(self, name, price):
         super().__init__(name, price, quantity=0)
 
@@ -150,13 +161,27 @@ class NonStockedProduct(Product):
         super().show()
         print("This is a non-stocked product")
 
+
 class LimitedProduct(Product):
-    def __init__(self, name, price, max_quantity):
-        super().__init__(name, price)
-        self.max_quantity = max_quantity
+    """
+    A subclass of Product representing a product with a limited quantity.
+
+    Attributes:
+        name (str): The name of the product.
+        price (float): The price of the product.
+        max_quantity (int): The maximum allowed quantity of the product.
+
+    Methods:
+        __init__: Initializes a LimitedProduct with a name, price, and maximum quantity.
+        buy: Buys a given quantity of the product, ensuring it doesn't exceed the maximum allowed quantity.
+        show: Displays the product information and the maximum allowed quantity.
+    """
+    def __init__(self, name, price, quantity,  maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
 
     def buy(self, quantity):
-        if quantity > self.max_quantity:
+        if quantity > self.maximum:
             raise ValueError("Quantity exceeds the maximum allowed quantity for this product")
         else:
             self.quantity -= quantity

@@ -1,4 +1,4 @@
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
 
 
 class Store:
@@ -89,20 +89,25 @@ class Store:
             if product.active is True:
                 products_list_active.append(product)
         return products_list_active
+    @staticmethod
+    def order(shopping_list) -> float:
+        """
+        Processes an order based on a given shopping
+        list and returns the total price of the order.
 
-def order(shopping_list) -> float:
-    """
-    Processes an order based on a given shopping
-    list and returns the total price of the order.
+        Args:
+        - shopping_list (list): A list of tuples
+            representing the products and quantities to be ordered.
 
-    Args:
-    - shopping_list (list): A list of tuples
-        representing the products and quantities to be ordered.
-
-    Returns:
-    float: The total price of the order.
-    """
-    total_price = 0
-    for product, quantity in shopping_list:
-        total_price += product.buy(quantity)
-    return total_price
+        Returns:
+        float: The total price of the order.
+        """
+        total_price = 0
+        for product, quantity in shopping_list:
+            if isinstance(product, LimitedProduct):
+                total_price += product.buy(quantity)
+            elif isinstance(product, NonStockedProduct):
+                total_price += product.price * quantity
+            else:
+                total_price += product.buy(quantity)
+        return total_price
