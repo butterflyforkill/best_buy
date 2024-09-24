@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from products import Product, NonStockedProduct, LimitedProduct
 
 class PromotionInterface(ABC):
     """
@@ -15,7 +16,7 @@ class PromotionInterface(ABC):
         self.name = name
     
     @abstractmethod
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
         """
         Applies the promotion to 
         a product and returns the discounted price.
@@ -41,7 +42,9 @@ class PercentageDiscount(PromotionInterface):
         super().__init__(name)
         self.discount_percentage = discount_percentage
     
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
+        if isinstance(product, (NonStockedProduct, LimitedProduct)):
+            return None
         original_price = product.price * quantity
         discount_amount = original_price * (self.discount_percentage / 100)
         return original_price - discount_amount
@@ -58,7 +61,9 @@ class FixedAmountDiscount(PromotionInterface):
         super().__init__(name)
         self.discount_amount = discount_amount
     
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
+        if isinstance(product, (NonStockedProduct, LimitedProduct)):
+            return None
         original_price = product.price * quantity
         return original_price - self.discount_amount
 
@@ -67,7 +72,9 @@ class BuyOneGetOneFree(PromotionInterface):
     """
     A promotion that offers a "buy one, get one free" deal on a product.
     """
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
+        if isinstance(product, (NonStockedProduct, LimitedProduct)):
+            return None
         original_price = product.price * quantity
         return original_price // 2
     

@@ -1,3 +1,6 @@
+from promotion import Promotion
+
+
 class Product:
     """
     A class representing a product in inventory.
@@ -49,6 +52,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None
 
 
     def is_active(self) -> bool:
@@ -107,7 +111,10 @@ class Product:
             str: A string containing the name,
                 price, and quantity of the product.
         """
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        product_info = f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        if self.promotion:
+            product_info += f", Promotion: {self.promotion.name}"
+        return product_info
 
 
     def buy(self, quantity) -> float:
@@ -134,12 +141,35 @@ class Product:
         if quantity > self.quantity:
             raise Exception("Not enough quantity available to buy")
 
-        total_price = self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
+
         self.quantity -= quantity
+
         if self.quantity == 0:
             self.deactivate()
 
         return total_price
+    
+    def get_promotion(self) -> Promotion:
+        """
+        Returns the promotion applied to the product.
+
+        Returns:
+            Promotion: The promotion applied to the product, or None if no promotion is applied.
+        """
+        return self.promotion
+
+    def set_promotion(self, promotion: Promotion):
+        """
+        Sets the promotion applied to the product.
+
+        Args:
+            promotion (Promotion): The promotion to apply to the product.
+        """
+        self.promotion = promotion
 
 
 class NonStockedProduct(Product):
