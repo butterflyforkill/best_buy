@@ -1,6 +1,3 @@
-from promotion import Promotion
-
-
 class Product:
     """
     A class representing a product in inventory.
@@ -153,21 +150,21 @@ class Product:
 
         return total_price
     
-    def get_promotion(self) -> Promotion:
+    def get_promotion(self) -> any:
         """
         Returns the promotion applied to the product.
 
         Returns:
-            Promotion: The promotion applied to the product, or None if no promotion is applied.
+            PromotionInterface: The promotion applied to the product, or None if no promotion is applied.
         """
         return self.promotion
 
-    def set_promotion(self, promotion: Promotion):
+    def set_promotion(self, promotion: any):
         """
         Sets the promotion applied to the product.
 
         Args:
-            promotion (Promotion): The promotion to apply to the product.
+            promotion (PromotionInterface): The promotion to apply to the product.
         """
         self.promotion = promotion
 

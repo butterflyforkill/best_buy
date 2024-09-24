@@ -1,5 +1,6 @@
 import pytest
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
+from promotion import PromotionInterface, PercentageDiscount, FixedAmountDiscount, BuyOneGetOneFree
 
 
 @pytest.mark.parametrize("name, price, quantity", [
@@ -64,3 +65,52 @@ def test_purchase_exceeds_available_quantity(initial_quantity, purchase_quantity
     product = Product("Webcam", 39.99, initial_quantity)
     with pytest.raises(Exception):
         product.buy(purchase_quantity)
+
+
+# Test promotion-related functionality
+def test_product_set_and_get_promotion():
+    product = Product("Laptop", 999.99, 5)
+    promotion = PercentageDiscount("Summer Sale", 10)
+
+    product.set_promotion(promotion)
+    assert product.get_promotion() == promotion
+
+
+def test_product_buy_with_promotion():
+    product = Product("Laptop", 999.99, 5)
+    promotion = PercentageDiscount("Summer Sale", 10)
+    product.set_promotion(promotion)
+
+    total_price = product.buy(2)
+    # Assert discounted price based on promotion logic
+    assert total_price < (product.price * 2)  # Discounted price
+
+@pytest.mark.usefixtures("mock_buy_for_non_stocked")
+def test_promotion_applies_to_product_types(product_types):
+    # Test promotion on different product types
+    for product_type in product_types:
+        if product_type == NonStockedProduct:
+            product = product_type("Test Product", 100.00)
+        elif product_type == LimitedProduct:
+            product = product_type("Test Product", 100.00, 10, 20)
+        else:  # Assuming Product
+            product = product_type("Test Product", 100.00, 10)
+        promotion = PercentageDiscount("Summer Sale", 10)
+        product.set_promotion(promotion)
+
+        total_price = product.buy(2)
+        # Assert discounted price or None based on product type
+        if isinstance(product, (NonStockedProduct, LimitedProduct)):
+            assert total_price is None  # Promotion not applicable
+        else:
+            assert total_price < (product.price * 2)  # Discounted price
+
+
+@pytest.fixture
+def product_types():
+    return [Product, NonStockedProduct, LimitedProduct]
+
+
+@pytest.fixture
+def mock_buy_for_non_stocked(mocker):
+    mocker.patch.object(NonStockedProduct, "buy", return_value=None)

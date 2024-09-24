@@ -1,6 +1,7 @@
 import sys
 from products import Product, NonStockedProduct, LimitedProduct
 from store import Store
+from promotion import PercentageDiscount, FixedAmountDiscount, BuyOneGetOneFree
 
 
 def display_menu():
@@ -171,12 +172,23 @@ def main():
     Returns:
     None
     """
-    product_list = [Product("MacBook Air M2", price=1450, quantity=100),
+    # setup initial stock of inventory
+    product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
                     Product("Bose QuietComfort Earbuds", price=250, quantity=500),
                     Product("Google Pixel 7", price=500, quantity=250),
                     NonStockedProduct("Windows License", price=125),
                     LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
-               ]
+                ]
+
+    # Create promotion catalog
+    percantage_disc = PercentageDiscount("30% off!", discount_percentage=30)
+    fixed_amount_dics = FixedAmountDiscount("Minus 200$ on all", discount_amount=200)
+    second_for_free_disc = BuyOneGetOneFree("Second one for Free!")
+
+    # Add promotions to products
+    product_list[0].set_promotion(percantage_disc)
+    product_list[1].set_promotion(fixed_amount_dics)
+    product_list[2].set_promotion(second_for_free_disc)
     best_buy = Store(product_list)
     start(best_buy)
 
