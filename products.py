@@ -140,3 +140,27 @@ class Product:
             self.deactivate()
 
         return total_price
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=0)
+
+    def show(self):
+        super().show()
+        print("This is a non-stocked product")
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, max_quantity):
+        super().__init__(name, price)
+        self.max_quantity = max_quantity
+
+    def buy(self, quantity):
+        if quantity > self.max_quantity:
+            raise ValueError("Quantity exceeds the maximum allowed quantity for this product")
+        else:
+            self.quantity -= quantity
+
+    def show(self):
+        super().show()
+        print(f"Maximum Allowed Quantity: {self.max_quantity}")

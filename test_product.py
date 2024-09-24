@@ -39,12 +39,28 @@ def test_product_becomes_inactive_at_zero_quantity():
 def test_product_purchase_modifies_quantity_and_returns_correct_output(initial_quantity, purchased_quantity, expected_remaining_quantity):
     # Arrange
     product = Product("Mouse", 25.00, initial_quantity)
-    
+
     # Act
     initial_quantity = product.get_quantity()
     product.buy(purchased_quantity)
     remaining_quantity = product.get_quantity()
-    
+
     # Assert
     assert remaining_quantity == initial_quantity - purchased_quantity
-    assert remaining_quantity == expected_remaining_quantity    
+    assert remaining_quantity == expected_remaining_quantity
+
+
+@pytest.mark.parametrize("purchase_quantity", [0, -1])
+def test_purchase_with_invalid_quantity(purchase_quantity):
+    """Tests buying a non-positive quantity of a product."""
+    product = Product("Headset", 75.99, 10)
+    with pytest.raises(ValueError):
+        product.buy(purchase_quantity)
+
+
+@pytest.mark.parametrize("initial_quantity, purchase_quantity", [(5, 7)])
+def test_purchase_exceeds_available_quantity(initial_quantity, purchase_quantity):
+    """Tests buying a quantity larger than the available stock."""
+    product = Product("Webcam", 39.99, initial_quantity)
+    with pytest.raises(Exception):
+        product.buy(purchase_quantity)
